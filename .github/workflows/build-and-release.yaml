@@ -42,13 +42,18 @@ jobs:
           command: build
           args: --release --target ${{ matrix.job.target }}
 
+      - name: Rename artifacts
+        shell: bash
+        # 中括弧展開を利用して、動的に生成されたファイル名を指定
+        # ベース: target/${{ matrix.job.target }}/release/${{ env.PROJECT_NAME }}
+        # 展開: -${{ github.ref_name }}-${{ matrix.job.target }}${{ matrix.job.extension }}
+        run: |
+          mv target/${{ matrix.job.target }}/release/${{ env.PROJECT_NAME }}{,-${{ github.ref_name }}-${{ matrix.job.target }}${{ matrix.job.extension }}}
+
       - name: Release
         uses: softprops/action-gh-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          # 中括弧展開を利用して、動的に生成されたファイル名を指定
-          # ベース: target/${{ matrix.job.target }}/release/${{ env.PROJECT_NAME }}
-          # 展開: -${{ github.ref_name }}-${{ matrix.job.target }}${{ matrix.job.extension }}
           files: |
-            target/${{ matrix.job.target }}/release/${{ env.PROJECT_NAME }}{-${{ github.ref_name }}-${{ matrix.job.target }}${{ matrix.job.extension }}}
+            target/${{ matrix.job.target }}/release/${{ env.PROJECT_NAME }}-${{ github.ref_name }}-${{ matrix.job.target }}${{ matrix.job.extension }}
