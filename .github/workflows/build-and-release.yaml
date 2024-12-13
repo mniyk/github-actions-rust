@@ -44,7 +44,7 @@ jobs:
           override: true
           profile: minimal
 
-      # targetに応じてcargoもしくはcrossを使用してビルド
+      # targetに応じてcargoもしくはcrossを使用してビルド 
       - name: Build
         uses: actions-rs/cargo@v1
         with:
