@@ -16,6 +16,9 @@ jobs:
     - name: Add Rust targets
       run: rustup target add x86_64-pc-windows-msvc x86_64-unknown-linux-gnu
 
+    - name: Install GNU linker for Windows
+      run: sudo apt-get install -y gcc-mingw-w64-x86-64
+
     - name: Build windows-x86_64
       run: cargo build --release --target x86_64-pc-windows-msvc
 
