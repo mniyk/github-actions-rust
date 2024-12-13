@@ -2,7 +2,7 @@ name: Build and Release
 on: push
 jobs:
   build-and-release:
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
 
     steps:
     - name: Checkout repository
@@ -13,17 +13,11 @@ jobs:
       with:
         toolchain: stable
 
-    - name: Add Rust targets
-      run: rustup target add x86_64-pc-windows-msvc x86_64-unknown-linux-gnu
+    - name: Add MSVC target
+      run: rustup target add x86_64-pc-windows-msvc
 
-    - name: Install GNU linker for Windows
-      run: sudo apt-get install -y gcc-mingw-w64-x86-64
-
-    - name: Build windows-x86_64
+    - name: Build Windows binary
       run: cargo build --release --target x86_64-pc-windows-msvc
-
-    - name: Build linux-x86_64
-      run: cargo build --release --target x86_64-unknown-linux-gnu
 
     - name: Create GitHub Release
       id: create_release
@@ -42,13 +36,5 @@ jobs:
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
         asset_path: target/x86_64-pc-windows-msvc/release/github-actions-rust.exe
-        asset_name: github-actions-rust-${{ github.ref }}-x86_64-win.exe
-        asset_content_type: application/octet-stream
-
-    - name: Upload Linux binary
-      uses: actions/upload-release-asset@v1
-      with:
-        upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: target/x86_64-unknown-linux-gnu/release/github-actions-rust
-        asset_name: github-actions-rust-${{ github.ref }}-x86_64-linux
+        asset_name: github-actions-rust-x86_64-windows.exe
         asset_content_type: application/octet-stream
